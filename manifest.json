@@ -1,9 +1,10 @@
 {
-  "name": "News24 - Last 24 Hours",
+  "name": "News24 Pro — 24 Ghanta ko Taaza Khabar",
   "short_name": "News24",
-  "description": "Live breaking news from around the world and Nepal in the last 24 hours.",
+  "description": "Bityeko 24 ghanta ko taaza trending khabar, Man City, Nepal, World ra Technology samachar.",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#090d16",
   "theme_color": "#090d16",
   "icons": [

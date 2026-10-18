@@ -8,22 +8,45 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="News24">
-    <meta name="theme-color" content="#090d16">
+    <meta name="theme-color" content="#090d16" id="themeMeta">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
 
-    <title>News24 — Last 24 Hours</title>
+    <title>News24 Pro — 24 Ghanta ko Taaza Khabar</title>
 
     <style>
         :root {
             --bg: #090d16;
-            --card-bg: #131b2e;
-            --card-border: #1e293b;
+            --surface: #131b2e;
+            --surface-hover: #1c2640;
+            --border: #1e293b;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.2);
+            --accent-glow: rgba(56, 189, 248, 0.25);
             --pill-active: #0284c7;
+            --pill-bg: #1e293b;
+            --breaking-bg: linear-gradient(90deg, #991b1b, #dc2626);
+            --badge-mancity: #6cabdd;
+            --badge-nepal: #ef4444;
+            --badge-tech: #10b981;
+            --badge-world: #3b82f6;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+            --pill-active: #0284c7;
+            --pill-bg: #e2e8f0;
+            --breaking-bg: linear-gradient(90deg, #b91c1c, #ef4444);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         * {
@@ -42,6 +65,7 @@
             padding-bottom: calc(env(safe-area-inset-bottom) + 30px);
             user-select: none;
             -webkit-user-select: none;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         /* Glassmorphism Header */
@@ -49,18 +73,23 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(9, 13, 22, 0.85);
+            background: rgba(9, 13, 22, 0.88);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            transition: background 0.2s;
+        }
+
+        [data-theme="light"] header {
+            background: rgba(248, 250, 252, 0.88);
         }
 
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .brand {
@@ -82,20 +111,26 @@
 
         .brand h1 {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.5px;
         }
 
-        .live-indicator {
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-tag {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
             color: #4ade80;
-            background: rgba(74, 222, 128, 0.1);
+            background: rgba(74, 222, 128, 0.12);
             padding: 4px 8px;
             border-radius: 20px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .pulse-dot {
@@ -112,10 +147,10 @@
             100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
         }
 
-        .refresh-btn {
-            background: #1e293b;
-            border: none;
-            color: #f8fafc;
+        .icon-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
             width: 34px;
             height: 34px;
             border-radius: 50%;
@@ -123,27 +158,70 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s;
+            font-size: 15px;
+            transition: transform 0.15s, background-color 0.2s;
         }
 
-        .refresh-btn:active {
-            transform: rotate(180deg) scale(0.9);
+        .icon-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Breaking News Ticker */
+        .breaking-bar {
+            background: var(--breaking-bg);
+            color: #ffffff;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .breaking-tag {
+            background: #ffffff;
+            color: #dc2626;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .breaking-marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            animation: marquee 18s linear infinite;
+        }
+
+        /* Offline Banner */
+        .offline-bar {
+            background: #d97706;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            padding: 5px;
+            display: none;
         }
 
         /* Search Bar */
         .search-box {
             position: relative;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .search-box input {
             width: 100%;
-            background: #131b2e;
-            border: 1px solid #1e293b;
+            background: var(--surface);
+            border: 1px solid var(--border);
             padding: 9px 14px 9px 36px;
-            border-radius: 10px;
-            color: #ffffff;
+            border-radius: 12px;
+            color: var(--text-primary);
             font-size: 14px;
             outline: none;
             transition: border-color 0.2s;
@@ -163,13 +241,13 @@
             pointer-events: none;
         }
 
-        /* Category Scroll */
+        /* Category Horizontal Scroll */
         .category-scroll {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
-            padding-bottom: 2px;
+            padding: 2px 0;
         }
 
         .category-scroll::-webkit-scrollbar {
@@ -177,27 +255,38 @@
         }
 
         .cat-pill {
-            background: #1e293b;
+            background: var(--pill-bg);
             color: var(--text-secondary);
-            border: none;
-            padding: 6px 14px;
+            border: 1px solid var(--border);
+            padding: 7px 14px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             white-space: nowrap;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s;
+        }
+
+        .cat-pill .count {
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 10px;
         }
 
         .cat-pill.active {
             background: var(--pill-active);
             color: #ffffff;
-            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+            border-color: var(--pill-active);
+            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
         }
 
-        /* News Stream */
+        /* Main Feed */
         main {
-            padding: 16px 16px;
+            padding: 14px 14px;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -207,59 +296,92 @@
             justify-content: space-between;
             font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             padding: 0 4px;
+            font-weight: 600;
         }
 
+        /* News Card (Image First) */
         .news-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
             text-decoration: none;
             color: inherit;
+            box-shadow: var(--card-shadow);
             transition: transform 0.15s, border-color 0.15s;
             cursor: pointer;
         }
 
         .news-card:active {
-            transform: scale(0.98);
+            transform: scale(0.985);
             border-color: var(--accent);
         }
 
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .card-media {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background: #1e293b;
+            overflow: hidden;
         }
 
-        .source-tag {
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+
+        .media-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .src-nepal { background: rgba(220, 38, 38, 0.85); }
+        .src-mancity { background: rgba(28, 44, 91, 0.9); color: #6cabdd; border: 1px solid #6cabdd; }
+        .src-world { background: rgba(30, 64, 175, 0.85); }
+        .src-tech { background: rgba(5, 150, 105, 0.85); }
+
+        .time-tag {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
             font-size: 11px;
             font-weight: 700;
-            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
             padding: 3px 8px;
             border-radius: 6px;
-            letter-spacing: 0.4px;
+            backdrop-filter: blur(6px);
         }
 
-        .src-bbc { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-        .src-aljazeera { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-        .src-techcrunch { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-        .src-hackernews { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
-
-        .time-badge {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
+        .card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .card-title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             line-height: 1.35;
             color: var(--text-primary);
         }
@@ -274,98 +396,103 @@
             overflow: hidden;
         }
 
-        .card-footer {
+        .card-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            padding-top: 6px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .read-link {
+            font-size: 13px;
             color: var(--accent);
-            font-weight: 600;
-            padding-top: 4px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* Loading Skeleton */
+        .share-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        /* Skeleton Loading */
         .skeleton {
-            background: linear-gradient(90deg, #131b2e 25%, #1e293b 50%, #131b2e 75%);
+            background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
             background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: 8px;
+            animation: shimmer 1.5s infinite;
         }
 
-        @keyframes loading {
+        @keyframes shimmer {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
 
         .skeleton-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 14px;
-            height: 120px;
-        }
-
-        /* iOS Install Guide Toast */
-        .ios-tip {
-            background: #1e293b;
-            border: 1px dashed var(--accent);
-            border-radius: 12px;
-            padding: 12px 14px;
+            height: 270px;
+            border-radius: 16px;
             margin-bottom: 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .ios-tip-icon {
-            font-size: 20px;
-        }
-
-        .ios-tip b {
-            color: #ffffff;
+            background: var(--surface);
+            border: 1px solid var(--border);
         }
     </style>
 </head>
 <body>
 
+    <!-- Offline Notification Banner -->
+    <div class="offline-bar" id="offlineBar">📴 Internet chaina — cached samachar dekhaudai</div>
+
+    <!-- Breaking News Red Ticker -->
+    <div class="breaking-bar" id="breakingBar">
+        <span class="breaking-tag">🔴 Taja Ticker</span>
+        <div class="breaking-marquee" id="breakingText">Taaza khabar bhetiyo...</div>
+    </div>
+
+    <!-- Sticky Glass Header -->
     <header>
         <div class="header-top">
             <div class="brand">
                 <span class="logo-badge">24</span>
-                <h1>News24</h1>
+                <div>
+                    <h1>News24</h1>
+                </div>
             </div>
-            <div class="live-indicator">
-                <span class="pulse-dot"></span>
-                <span>Past 24h</span>
+            
+            <div class="header-controls">
+                <div class="live-tag">
+                    <span class="pulse-dot"></span>
+                    <span>24 Ghanta</span>
+                </div>
+                <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Theme">🌙</button>
+                <button class="icon-btn" id="refreshBtn" onclick="fetchLiveNews()" title="Refresh">↻</button>
             </div>
-            <button class="refresh-btn" id="refreshBtn" onclick="fetchLiveNews()" title="Refresh">↻</button>
         </div>
 
         <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search 24h headlines..." oninput="handleSearch()">
+            <input type="text" id="searchInput" placeholder="Khabar khojnuhos..." oninput="handleSearch()">
         </div>
 
         <div class="category-scroll">
-            <button class="cat-pill active" onclick="setCategory('all', this)">🔥 All News</button>
-            <button class="cat-pill" onclick="setCategory('world', this)">🌍 World</button>
-            <button class="cat-pill" onclick="setCategory('tech', this)">⚡ Tech & Cyber</button>
-            <button class="cat-pill" onclick="setCategory('aljazeera', this)">📰 Global Beat</button>
+            <button class="cat-pill active" onclick="setCategory('all', this)">🔥 Sabai <span class="count" id="count-all">0</span></button>
+            <button class="cat-pill" onclick="setCategory('nepal', this)">🇳🇵 Nepal Trending <span class="count" id="count-nepal">0</span></button>
+            <button class="cat-pill" onclick="setCategory('mancity', this)">⚽ Man City Khabar <span class="count" id="count-mancity">0</span></button>
+            <button class="cat-pill" onclick="setCategory('world', this)">🌍 Bishwa Halchal <span class="count" id="count-world">0</span></button>
+            <button class="cat-pill" onclick="setCategory('tech', this)">💻 IT & Internet <span class="count" id="count-tech">0</span></button>
         </div>
     </header>
 
     <main>
-        <div class="ios-tip">
-            <span class="ios-tip-icon">📲</span>
-            <div><b>iPhone Tip:</b> Tap Safari's <b>Share</b> button and tap <b>"Add to Home Screen"</b> to install this as a full app!</div>
-        </div>
-
         <div class="feed-info">
-            <span id="storyCount">Filtering last 24h...</span>
-            <span id="lastUpdated">Updated just now</span>
+            <span id="storyCount">Bityeko 24 ghanta ko khabar...</span>
+            <span id="lastUpdated">Updating...</span>
         </div>
 
         <div id="newsContainer">
@@ -376,18 +503,59 @@
     </main>
 
     <script>
+        // Feeds Configuration (OnlineKhabar, BBC ManCity, BBC World, Al Jazeera, TechCrunch)
         const FEEDS = [
-            { id: 'world', name: 'BBC News', class: 'src-bbc', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
-            { id: 'aljazeera', name: 'Al Jazeera', class: 'src-aljazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
-            { id: 'tech', name: 'TechCrunch', class: 'src-techcrunch', url: 'https://techcrunch.com/feed/' },
-            { id: 'tech', name: 'Hacker News', class: 'src-hackernews', url: 'https://news.ycombinator.com/rss' }
+            { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://english.onlinekhabar.com/feed' },
+            { id: 'mancity', name: 'BBC Man City', class: 'src-mancity', url: 'https://feeds.bbci.co.uk/sport/football/teams/manchester-city/rss.xml' },
+            { id: 'world', name: 'BBC World', class: 'src-world', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+            { id: 'world', name: 'Al Jazeera', class: 'src-world', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+            { id: 'tech', name: 'TechCrunch', class: 'src-tech', url: 'https://techcrunch.com/feed/' },
+            { id: 'tech', name: 'Hacker News', class: 'src-tech', url: 'https://news.ycombinator.com/rss' }
         ];
+
+        // Dynamic High-Res SVG Placeholders for 100% Guaranteed Visuals
+        const FALLBACKS = {
+            nepal: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23881337'/><stop offset='100%' stop-color='%231e1b4b'/></linearGradient></defs><rect width='800' height='450' fill='url(%23g)'/><path d='M100 350 L300 180 L450 300 L600 120 L750 350 Z' fill='%23ffffff' opacity='0.2'/><text x='50%' y='60%' fill='%23ffffff' font-family='sans-serif' font-size='48' font-weight='bold' text-anchor='middle'>NEPAL TRENDING</text></svg>",
+            mancity: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%231c2c5b'/><stop offset='100%' stop-color='%236cabdd'/></linearGradient></defs><rect width='800' height='450' fill='url(%23g)'/><circle cx='400' cy='225' r='90' fill='%23ffffff' opacity='0.15'/><text x='50%' y='58%' fill='%23ffffff' font-family='sans-serif' font-size='48' font-weight='bold' text-anchor='middle'>MAN CITY FC ⚽</text></svg>",
+            world: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%230f172a'/><stop offset='100%' stop-color='%231e40af'/></linearGradient></defs><rect width='800' height='450' fill='url(%23g)'/><circle cx='400' cy='225' r='110' fill='none' stroke='%2338bdf8' stroke-width='4' opacity='0.3'/><text x='50%' y='58%' fill='%23ffffff' font-family='sans-serif' font-size='48' font-weight='bold' text-anchor='middle'>BISHWA HALCHAL 🌍</text></svg>",
+            tech: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23064e3b'/><stop offset='100%' stop-color='%230f172a'/></linearGradient></defs><rect width='800' height='450' fill='url(%23g)'/><rect x='320' y='145' width='160' height='160' rx='20' fill='%2310b981' opacity='0.2'/><text x='50%' y='58%' fill='%2334d399' font-family='sans-serif' font-size='48' font-weight='bold' text-anchor='middle'>IT &amp; INTERNET 💻</text></svg>"
+        };
 
         let allArticles = [];
         let currentCategory = 'all';
 
+        // 3-Layer Image Extraction Pipeline
+        function extractImage(item, category) {
+            if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
+            if (item.enclosure && item.enclosure.link && item.enclosure.link.startsWith('http')) return item.enclosure.link;
+            
+            // Layer 2: Regex extraction from content/description
+            const combinedHtml = (item.description || '') + ' ' + (item.content || '');
+            const match = combinedHtml.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+            if (match && match[1]) return match[1];
+
+            // Layer 3: Category High-Res Fallback
+            return FALLBACKS[category] || FALLBACKS.world;
+        }
+
+        // Relative time in Romanized Nepali (Nepal Time UTC+5:45 Aware)
+        function getNepaliTime(timestamp) {
+            const diffMs = Date.now() - timestamp;
+            const mins = Math.max(1, Math.floor(diffMs / 60000));
+            if (mins < 60) return `${mins} min agadi`;
+            const hours = Math.floor(mins / 60);
+            if (hours === 1) return `1 ghanta agadi`;
+            if (hours < 24) return `${hours} ghanta agadi`;
+            return `1 din agadi`;
+        }
+
+        function cleanHtml(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return (temp.textContent || temp.innerText || '').trim();
+        }
+
         async function fetchLiveNews() {
-            const container = document.getElementById('newsContainer');
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.style.transform = 'rotate(360deg)';
             
@@ -408,7 +576,8 @@
                                     snippet: cleanHtml(item.description || ''),
                                     source: feed.name,
                                     sourceClass: feed.class,
-                                    category: feed.id
+                                    category: feed.id,
+                                    image: extractImage(item, feed.id)
                                 }));
                             }
                             return [];
@@ -424,9 +593,15 @@
                     .filter(item => item.pubDate >= twentyFourHoursAgo && item.pubDate <= now + 3600000)
                     .sort((a, b) => b.pubDate - a.pubDate);
 
-                // Save to localStorage for instant offline access
+                // Update counts on category pills
+                updatePillCounts();
+
+                // Check for Breaking News
+                checkBreakingNews();
+
+                // Save to localStorage
                 if (allArticles.length > 0) {
-                    localStorage.setItem('cached_news_24', JSON.stringify({
+                    localStorage.setItem('cached_news_pro', JSON.stringify({
                         items: allArticles,
                         time: now
                     }));
@@ -436,22 +611,33 @@
             } finally {
                 refreshBtn.style.transform = 'none';
                 renderNews();
-                document.getElementById('lastUpdated').innerText = "Updated " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('lastUpdated').innerText = "Antim update: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
         }
 
-        function cleanHtml(html) {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            return temp.textContent || temp.innerText || '';
+        function updatePillCounts() {
+            document.getElementById('count-all').innerText = allArticles.length;
+            ['nepal', 'mancity', 'world', 'tech'].forEach(cat => {
+                const count = allArticles.filter(item => item.category === cat).length;
+                const el = document.getElementById(`count-${cat}`);
+                if (el) el.innerText = count;
+            });
         }
 
-        function getRelativeTime(timestamp) {
-            const diffMs = Date.now() - timestamp;
-            const mins = Math.max(1, Math.floor(diffMs / 60000));
-            if (mins < 60) return `${mins}m ago`;
-            const hours = Math.floor(mins / 60);
-            return `${hours}h ago`;
+        function checkBreakingNews() {
+            const breakingWords = ['breaking', 'urgent', 'alert', 'dies', 'attack', 'champion', 'signs', 'crash'];
+            const breakingItem = allArticles.find(item => 
+                breakingWords.some(w => item.title.toLowerCase().includes(w))
+            );
+            const bar = document.getElementById('breakingBar');
+            const text = document.getElementById('breakingText');
+            if (breakingItem) {
+                text.innerText = `🚨 ${breakingItem.title} (${breakingItem.source})`;
+                bar.style.display = 'flex';
+                bar.onclick = () => window.open(breakingItem.link, '_blank');
+            } else {
+                bar.style.display = 'none';
+            }
         }
 
         function renderNews(filterText = '') {
@@ -464,34 +650,52 @@
 
             if (filterText.trim()) {
                 const q = filterText.toLowerCase();
-                filtered = filtered.filter(item => item.title.toLowerCase().includes(q) || item.snippet.toLowerCase().includes(q));
+                filtered = filtered.filter(item => 
+                    item.title.toLowerCase().includes(q) || 
+                    item.snippet.toLowerCase().includes(q) ||
+                    item.source.toLowerCase().includes(q)
+                );
             }
 
-            document.getElementById('storyCount').innerText = `${filtered.length} stories in last 24h`;
+            document.getElementById('storyCount').innerText = `${filtered.length} wota khabar bityeko 24 ghanta ma`;
 
             if (filtered.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 40px 10px; color: var(--text-secondary);">
-                        <p style="font-size: 32px; margin-bottom: 8px;">🗞️</p>
-                        <p>No stories found matching your filter in the last 24h.</p>
+                    <div style="text-align: center; padding: 50px 10px; color: var(--text-secondary);">
+                        <p style="font-size: 36px; margin-bottom: 10px;">🗞️</p>
+                        <p style="font-weight: 600;">Yo category ma bityeko 24 ghanta vitra khabar bhetiyena.</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = filtered.map(item => `
-                <a href="${item.link}" target="_blank" rel="noopener" class="news-card">
-                    <div class="card-meta">
-                        <span class="source-tag ${item.sourceClass}">${item.source}</span>
-                        <span class="time-badge">${getRelativeTime(item.pubDate)}</span>
+                <div class="news-card" onclick="window.open('${item.link}', '_blank')">
+                    <div class="card-media">
+                        <img class="card-img" src="${item.image}" alt="News Image" onerror="this.src='${FALLBACKS[item.category] || FALLBACKS.world}'" loading="lazy">
+                        <span class="media-badge ${item.sourceClass}">${item.source}</span>
+                        <span class="time-tag">⏱️ ${getNepaliTime(item.pubDate)}</span>
                     </div>
-                    <div class="card-title">${item.title}</div>
-                    ${item.snippet ? `<div class="card-snippet">${item.snippet}</div>` : ''}
-                    <div class="card-footer">
-                        <span>Read full story →</span>
+                    <div class="card-body">
+                        <div class="card-title">${item.title}</div>
+                        ${item.snippet ? `<div class="card-snippet">${item.snippet}</div>` : ''}
+                        <div class="card-actions">
+                            <span class="read-link">Pura samachar padhnus →</span>
+                            <button class="share-btn" onclick="shareArticle(event, '${item.title.replace(/'/g, "\\'")}', '${item.link}')">📤 Share</button>
+                        </div>
                     </div>
-                </a>
+                </div>
             `).join('');
+        }
+
+        function shareArticle(e, title, url) {
+            e.stopPropagation();
+            if (navigator.share) {
+                navigator.share({ title: title, url: url }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url);
+                alert("Link copy bhayo: " + url);
+            }
         }
 
         function setCategory(cat, btn) {
@@ -505,12 +709,41 @@
             renderNews(document.getElementById('searchInput').value);
         }
 
-        // Initialize: Load cached news first, then fetch live
-        const cached = localStorage.getItem('cached_news_24');
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', next);
+            document.getElementById('themeToggle').innerText = next === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeMeta').setAttribute('content', next === 'dark' ? '#090d16' : '#f8fafc');
+            localStorage.setItem('theme_pref', next);
+        }
+
+        // Initialize Theme Preference
+        const savedTheme = localStorage.getItem('theme_pref') || 
+            (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.body.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeToggle').innerText = savedTheme === 'dark' ? '🌙' : '☀️';
+
+        // Online / Offline Status
+        window.addEventListener('online', () => document.getElementById('offlineBar').style.display = 'none');
+        window.addEventListener('offline', () => document.getElementById('offlineBar').style.display = 'block');
+        if (!navigator.onLine) document.getElementById('offlineBar').style.display = 'block';
+
+        // Service Worker Registration for Offline Cache
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg fail:', err));
+        }
+
+        // Auto-refresh every 5 minutes (300000ms)
+        setInterval(fetchLiveNews, 300000);
+
+        // Load Cached Data first, then fetch Live
+        const cached = localStorage.getItem('cached_news_pro');
         if (cached) {
             try {
                 const parsed = JSON.parse(cached);
                 allArticles = parsed.items || [];
+                updatePillCounts();
                 renderNews();
             } catch (e) {}
         }
