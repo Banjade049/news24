@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
 
-    <title>News24 Pro — Romanized Nepali News & NotebookLM</title>
+    <title>News24 — Live Breaking News</title>
 
     <style>
         :root {
@@ -55,7 +55,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Mukta", "Kalimati", Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text-primary);
             min-height: 100vh;
@@ -125,7 +125,7 @@
             color: #c4b5fd;
             font-size: 12px;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 5px 11px;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -369,28 +369,18 @@
             gap: 8px;
         }
 
-        .card-roman-title {
+        /* Clean Original Title */
+        .card-title {
             font-size: 16px;
-            font-weight: 800;
-            line-height: 1.35;
+            font-weight: 700;
+            line-height: 1.4;
             color: var(--text-primary);
-        }
-
-        .card-orig-title {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            line-height: 1.35;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 4px 8px;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent);
         }
 
         .card-snippet {
             font-size: 13px;
             color: var(--text-secondary);
-            line-height: 1.45;
+            line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -409,7 +399,7 @@
         }
 
         .read-btn {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--accent);
             font-weight: 700;
             text-decoration: none;
@@ -462,7 +452,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
             z-index: 200;
             display: none;
@@ -526,22 +516,41 @@
         }
 
         .saved-item {
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .saved-title {
             font-size: 14px;
             font-weight: 700;
             color: var(--text-primary);
+            line-height: 1.35;
         }
 
-        .saved-meta {
+        .saved-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .btn-copy-one {
+            color: var(--accent);
+            background: transparent;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-del-one {
+            color: #ef4444;
+            background: transparent;
+            border: none;
             font-size: 11px;
-            color: var(--text-secondary);
+            cursor: pointer;
         }
 
         /* Toast Notification */
@@ -554,7 +563,7 @@
             color: #ffffff;
             font-size: 13px;
             font-weight: 700;
-            padding: 10px 18px;
+            padding: 11px 18px;
             border-radius: 24px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             z-index: 1000;
@@ -611,7 +620,7 @@
             </div>
             
             <div class="header-controls">
-                <button class="saved-badge-btn" onclick="openSavedModal()" title="NotebookLM Saved">
+                <button class="saved-badge-btn" onclick="openSavedModal()" title="NotebookLM Saved Articles">
                     📓 <span id="savedCount">0</span>
                 </button>
                 <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Theme">🌙</button>
@@ -654,11 +663,11 @@
                 <button class="icon-btn" onclick="closeSavedModal()">✕</button>
             </div>
             <div class="modal-body" id="savedListContainer">
-                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">Kehi khabar save bhayeko chaina.</p>
+                <p style="color: var(--text-secondary); text-align: center; padding: 30px;">Kehi khabar save bhayeko chaina.<br><small>News card ko 📓 NotebookLM button thichnus!</small></p>
             </div>
             <div class="modal-footer">
                 <button class="btn-modal btn-primary" onclick="window.open('https://notebooklm.google.com/', '_blank')">🚀 Open NotebookLM</button>
-                <button class="btn-modal btn-secondary" onclick="copyAllSavedMarkdown()">📋 Copy All</button>
+                <button class="btn-modal btn-secondary" onclick="copyAllSavedMarkdown()">📋 Copy All Links</button>
             </div>
         </div>
     </div>
@@ -667,26 +676,26 @@
     <div id="toast" class="toast">📋 Link copy bhayo!</div>
 
     <script>
-        // Comprehensive News Feeds from Top Portals (Added Nagarik News!)
+        // Feeds Configuration (Original Clean Content — No transliteration mangling!)
         const FEEDS = [
-            // Nepal Portals (Native Devanagari auto-romanized + English)
-            { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://www.onlinekhabar.com/feed', isNepali: true },
-            { id: 'nepal', name: 'Ratopati', class: 'src-nepal', url: 'https://www.ratopati.com/feed', isNepali: true },
-            { id: 'nepal', name: 'Nagarik News', class: 'src-nepal', url: 'https://nagariknews.nagariknetwork.com/feed', isNepali: true },
-            { id: 'nepal', name: 'Setopati', class: 'src-nepal', url: 'https://www.setopati.com/feed', isNepali: true },
-            { id: 'nepal', name: 'OnlineKhabar English', class: 'src-nepal', url: 'https://english.onlinekhabar.com/feed', isNepali: false },
+            // Nepal Portals (Native Clean Headlines)
+            { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://www.onlinekhabar.com/feed' },
+            { id: 'nepal', name: 'Ratopati', class: 'src-nepal', url: 'https://www.ratopati.com/feed' },
+            { id: 'nepal', name: 'Nagarik News', class: 'src-nepal', url: 'https://nagariknews.nagariknetwork.com/feed' },
+            { id: 'nepal', name: 'Setopati', class: 'src-nepal', url: 'https://www.setopati.com/feed' },
+            { id: 'nepal', name: 'OnlineKhabar English', class: 'src-nepal', url: 'https://english.onlinekhabar.com/feed' },
             
             // Manchester City & Football
-            { id: 'mancity', name: 'BBC Man City', class: 'src-mancity', url: 'https://feeds.bbci.co.uk/sport/football/teams/manchester-city/rss.xml', isNepali: false },
-            { id: 'mancity', name: 'Sky Sports Man City', class: 'src-mancity', url: 'https://www.skysports.com/rss/12040', isNepali: false },
+            { id: 'mancity', name: 'BBC Man City', class: 'src-mancity', url: 'https://feeds.bbci.co.uk/sport/football/teams/manchester-city/rss.xml' },
+            { id: 'mancity', name: 'Sky Sports Man City', class: 'src-mancity', url: 'https://www.skysports.com/rss/12040' },
             
             // World News
-            { id: 'world', name: 'BBC World', class: 'src-world', url: 'https://feeds.bbci.co.uk/news/world/rss.xml', isNepali: false },
-            { id: 'world', name: 'Al Jazeera', class: 'src-world', url: 'https://www.aljazeera.com/xml/rss/all.xml', isNepali: false },
+            { id: 'world', name: 'BBC World', class: 'src-world', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+            { id: 'world', name: 'Al Jazeera', class: 'src-world', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
             
             // IT & Internet
-            { id: 'tech', name: 'TechCrunch', class: 'src-tech', url: 'https://techcrunch.com/feed/', isNepali: false },
-            { id: 'tech', name: 'The Verge', class: 'src-tech', url: 'https://www.theverge.com/rss/index.xml', isNepali: false }
+            { id: 'tech', name: 'TechCrunch', class: 'src-tech', url: 'https://techcrunch.com/feed/' },
+            { id: 'tech', name: 'The Verge', class: 'src-tech', url: 'https://www.theverge.com/rss/index.xml' }
         ];
 
         // Guaranteed High-Definition SVG Fallbacks
@@ -700,81 +709,6 @@
         let allArticles = [];
         let currentCategory = 'all';
 
-        // High-Precision Devanagari to Romanized Nepali Transliterator
-        function toRomanizedNepali(text) {
-            if (!text) return "";
-            if (!/[\u0900-\u097F]/.test(text)) {
-                return text;
-            }
-
-            const wordMap = {
-                "काठमाडौं": "Kathmandu", "काठमाडौँ": "Kathmandu", "नेपाल": "Nepal",
-                "प्रधानमन्त्री": "Pradhanmantri", "सरकार": "Sarkar", "प्रहरी": "Prahari",
-                "अदालत": "Adalat", "सुनकोशी": "Sunkoshi", "जिप": "Jeep",
-                "दुर्घटना": "Durghatana", "मृत्यु": "Mrityu", "घाइते": "Ghaite",
-                "दसैँ": "Dasain", "दशैं": "Dasain", "तिहार": "Tihar", "यातायात": "Yatayat",
-                "सडक": "Sadak", "गाडी": "Gadi", "बलिउड": "Bollywood",
-                "अभिनेता": "Abhineta", "गोली": "Goli", "निर्वाचन": "Nirbachan",
-                "एमाले": "UML", "कांग्रेस": "Congress", "माओवादी": "Maoist",
-                "रवि": "Rabi", "ओली": "Oli", "देउवा": "Deuba", "प्रचण्ड": "Prachanda",
-                "क्रिकेट": "Cricket", "फुटबल": "Football", "मन्त्री": "Mantri",
-                "पक्राउ": "Pakrau", "प्रतियोगिता": "Pratiyogita"
-            };
-
-            let processed = text;
-            for (const [k, v] of Object.entries(wordMap)) {
-                processed = processed.split(k).join(v);
-            }
-
-            const consonants = {
-                "क":"k","ख":"kh","ग":"g","घ":"gh","ङ":"ng",
-                "च":"ch","छ":"chh","ज":"j","झ":"jh","ञ":"nya",
-                "ट":"t","ठ":"th","ड":"d","ढ":"dh","ण":"n",
-                "त":"t","थ":"th","द":"d","ध":"dh","न":"n",
-                "प":"p","फ":"ph","ब":"b","भ":"bh","म":"m",
-                "य":"y","र":"r","ल":"l","व":"w",
-                "श":"sh","ष":"sh","स":"s","ह":"h",
-                "क्ष":"chhya","त्र":"tra","ज्ञ":"gyan"
-            };
-            const vowels = {
-                "अ":"a","आ":"aa","इ":"i","ई":"ee","उ":"u","ऊ":"oo","ऋ":"ri",
-                "ए":"e","ऐ":"ai","ओ":"o","औ":"au"
-            };
-            const matras = {
-                "ा":"a","ि":"i","ी":"ee","ु":"u","ू":"oo","ृ":"ri",
-                "े":"e","ै":"ai","ो":"o","ौ":"au"
-            };
-
-            let res = "";
-            for (let i = 0; i < processed.length; i++) {
-                let ch = processed[i];
-                let next = processed[i+1];
-                if (vowels[ch]) {
-                    res += vowels[ch];
-                } else if (consonants[ch]) {
-                    res += consonants[ch];
-                    if (next === "्") {
-                        i++;
-                    } else if (matras[next]) {
-                        res += matras[next];
-                        i++;
-                    } else if (next === "ं" || next === "ँ") {
-                        res += "an";
-                        i++;
-                    } else if (next && (consonants[next] || vowels[next] || next === " " || next === ":" || next === "-" || next === "|")) {
-                        res += "a";
-                    }
-                } else if (ch === "ं" || ch === "ँ") {
-                    res += "n";
-                } else if (ch === "।") {
-                    res += ".";
-                } else {
-                    res += ch;
-                }
-            }
-            return res.trim().charAt(0).toUpperCase() + res.trim().slice(1);
-        }
-
         // 3-Layer Image Extraction Pipeline
         function extractImage(item, category) {
             if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
@@ -787,18 +721,17 @@
             return FALLBACKS[category] || FALLBACKS.world;
         }
 
-        // CRITICAL BUG FIX: Parse RSS2JSON UTC date properly (Appends ' UTC' if timezone is missing)
+        // ACCURATE UTC DATE PARSER: Fixes "5 ghanta agadi" bug
         function parseFeedDate(pubDateStr) {
             if (!pubDateStr) return Date.now();
             let s = pubDateStr.trim();
-            // If string is e.g. "2026-10-18 16:44:55", force UTC parsing
             if (!s.includes('Z') && !s.includes('+') && !s.includes('GMT') && !s.includes('UTC')) {
                 return new Date(s.replace(/-/g, '/') + ' UTC').getTime();
             }
             return new Date(s).getTime();
         }
 
-        // Relative time in Romanized Nepali (Now accurate to the minute!)
+        // Relative time in Nepali
         function getNepaliTime(timestamp) {
             const diffMs = Date.now() - timestamp;
             const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -821,7 +754,7 @@
             
             let fetchedItems = [];
             const now = Date.now();
-            const cutoff = now - (48 * 60 * 60 * 1000); // 48-Hour window
+            const cutoff = now - (48 * 60 * 60 * 1000); // 48 hours
 
             try {
                 const requests = FEEDS.map(feed => 
@@ -829,22 +762,16 @@
                         .then(r => r.json())
                         .then(data => {
                             if (data.status === 'ok' && data.items) {
-                                return data.items.map(item => {
-                                    const origTitle = cleanHtml(item.title);
-                                    const romanTitle = toRomanizedNepali(origTitle);
-                                    return {
-                                        origTitle: origTitle,
-                                        romanTitle: romanTitle,
-                                        isNepaliOrigin: feed.isNepali,
-                                        link: item.link,
-                                        pubDate: parseFeedDate(item.pubDate),
-                                        snippet: toRomanizedNepali(cleanHtml(item.description || '')),
-                                        source: feed.name,
-                                        sourceClass: feed.class,
-                                        category: feed.id,
-                                        image: extractImage(item, feed.id)
-                                    };
-                                });
+                                return data.items.map(item => ({
+                                    title: cleanHtml(item.title),
+                                    link: item.link,
+                                    pubDate: parseFeedDate(item.pubDate),
+                                    snippet: cleanHtml(item.description || ''),
+                                    source: feed.name,
+                                    sourceClass: feed.class,
+                                    category: feed.id,
+                                    image: extractImage(item, feed.id)
+                                }));
                             }
                             return [];
                         })
@@ -863,9 +790,9 @@
                 checkBreakingNews();
                 updateSavedCount();
 
-                // Save to localStorage
+                // Save to localStorage so it works OFFLINE and even when laptop is OFF
                 if (allArticles.length > 0) {
-                    localStorage.setItem('cached_news_pro', JSON.stringify({
+                    localStorage.setItem('cached_news_clean', JSON.stringify({
                         items: allArticles,
                         time: now
                     }));
@@ -889,14 +816,14 @@
         }
 
         function checkBreakingNews() {
-            const breakingWords = ['breaking', 'urgent', 'alert', 'dies', 'attack', 'champion', 'signs', 'crash', 'khasyo', 'mrityu', 'durghatana'];
+            const breakingWords = ['breaking', 'urgent', 'alert', 'dies', 'attack', 'champion', 'signs', 'crash', 'खस्यो', 'मृत्यु', 'दुर्घटना', 'पक्राउ'];
             const breakingItem = allArticles.find(item => 
-                breakingWords.some(w => (item.romanTitle + ' ' + item.origTitle).toLowerCase().includes(w))
+                breakingWords.some(w => item.title.toLowerCase().includes(w))
             );
             const bar = document.getElementById('breakingBar');
             const text = document.getElementById('breakingText');
             if (breakingItem) {
-                text.innerText = `🚨 ${breakingItem.romanTitle} (${breakingItem.source})`;
+                text.innerText = `🚨 ${breakingItem.title} (${breakingItem.source})`;
                 bar.style.display = 'flex';
                 bar.onclick = () => window.open(breakingItem.link, '_blank');
             } else {
@@ -915,8 +842,7 @@
             if (filterText.trim()) {
                 const q = filterText.toLowerCase();
                 filtered = filtered.filter(item => 
-                    item.romanTitle.toLowerCase().includes(q) || 
-                    item.origTitle.toLowerCase().includes(q) || 
+                    item.title.toLowerCase().includes(q) || 
                     item.snippet.toLowerCase().includes(q) || 
                     item.source.toLowerCase().includes(q)
                 );
@@ -935,13 +861,9 @@
             }
 
             container.innerHTML = filtered.map((item) => {
-                const subTitleHtml = item.isNepaliOrigin ? 
-                    `<div class="card-orig-title">🇳🇵 <b>Asli:</b> ${item.origTitle}</div>` : '';
-
-                const safeTitle = item.romanTitle.replace(/'/g, "\\'");
+                const safeTitle = item.title.replace(/'/g, "\\'");
                 const safeUrl = item.link;
                 const safeSource = item.source.replace(/'/g, "\\'");
-                const safeSnippet = (item.snippet || '').substring(0, 150).replace(/'/g, "\\'");
 
                 return `
                 <div class="news-card">
@@ -952,15 +874,14 @@
                             <span class="time-tag">⏱️ ${getNepaliTime(item.pubDate)}</span>
                         </div>
                         <div class="card-body">
-                            <div class="card-roman-title">${item.romanTitle}</div>
-                            ${subTitleHtml}
+                            <div class="card-title">${item.title}</div>
                             ${item.snippet ? `<div class="card-snippet">${item.snippet}</div>` : ''}
                         </div>
                     </a>
                     <div class="card-actions">
                         <a href="${item.link}" target="_blank" rel="noopener" class="read-btn">Padhnus →</a>
                         <div class="action-buttons">
-                            <button type="button" class="btn-action btn-notebook" onclick="saveToNotebookLM(event, '${safeTitle}', '${safeUrl}', '${safeSource}', '${safeSnippet}')" title="Save to NotebookLM">
+                            <button type="button" class="btn-action btn-notebook" onclick="saveToNotebookLM(event, '${safeTitle}', '${safeUrl}', '${safeSource}')" title="NotebookLM ma save garne">
                                 📓 NotebookLM
                             </button>
                             <button type="button" class="btn-action btn-share" onclick="handleShare(event, '${safeTitle}', '${safeUrl}')" title="Share Article">
@@ -973,67 +894,65 @@
             }).join('');
         }
 
-        // NotebookLM Integration: Calls Port 5051 API with LocalStorage Fallback
-        async function saveToNotebookLM(event, title, url, source, snippet) {
+        // NotebookLM 100% Client-Side Storage: Works on Phone Even When Laptop is OFF!
+        function saveToNotebookLM(event, title, url, source) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
             }
 
-            showToast("⏳ NotebookLM ma add gardai...");
-            const apiHost = window.location.hostname || '192.168.1.127';
-            
-            try {
-                const res = await fetch(`http://${apiHost}:5051/save-article`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, url, source, snippet })
-                });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    showToast(`📓 NotebookLM ma save bhayo! (${data.total_saved} saved)`);
-                    updateSavedCount();
-                } else {
-                    saveToLocalStorage(title, url, source, snippet);
-                }
-            } catch (err) {
-                // If backend API isn't reached (e.g. on mobile outside Wi-Fi), save locally
-                saveToLocalStorage(title, url, source, snippet);
-            }
-        }
-
-        function saveToLocalStorage(title, url, source, snippet) {
             let saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
-            if (!saved.some(a => a.url === url)) {
-                saved.unshift({ title, url, source, snippet, saved_at: new Date().toLocaleTimeString() });
+            const exists = saved.some(a => a.url === url);
+            
+            if (!exists) {
+                saved.unshift({
+                    title: title,
+                    url: url,
+                    source: source,
+                    saved_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
                 localStorage.setItem('news24_saved_articles', JSON.stringify(saved));
-                showToast(`📓 Saved to Notebook queue! (${saved.length} saved)`);
-                updateSavedCount();
+            }
+
+            updateSavedCount();
+
+            // Automatically copy URL to clipboard so user can paste straight into NotebookLM
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast(`📓 Saved! (${saved.length}) — URL copied! NotebookLM ma paste garna milcha`);
+                }).catch(() => {
+                    showToast(`📓 Saved to NotebookLM list! (${saved.length})`);
+                });
             } else {
-                showToast(`📓 Paila nai save bhayeko cha!`);
+                showToast(`📓 Saved to NotebookLM list! (${saved.length})`);
             }
         }
 
         function updateSavedCount() {
-            // Count from local storage or fetch from API
             const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
             const badge = document.getElementById('savedCount');
             if (badge) badge.innerText = saved.length;
         }
 
-        // Modal for viewing saved articles
+        // Modal for NotebookLM Saved Articles
         function openSavedModal() {
             const modal = document.getElementById('savedModal');
             const container = document.getElementById('savedListContainer');
             const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
             
             if (saved.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 30px;">Kehi khabar save bhayeko chaina.<br><small>News card ko 📓 NotebookLM button thichnus!</small></p>`;
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 30px;">Kehi khabar save bhayeko chaina.<br><small style="margin-top:8px; display:block;">News card ko <b>📓 NotebookLM</b> button thichnus!</small></p>`;
             } else {
                 container.innerHTML = saved.map((a, i) => `
                     <div class="saved-item">
                         <div class="saved-title">${i+1}. ${a.title}</div>
-                        <div class="saved-meta">Source: ${a.source} | <a href="${a.url}" target="_blank" style="color:var(--accent);">Link ↗</a></div>
+                        <div class="saved-actions">
+                            <span style="color:var(--text-secondary); font-size:11px;">${a.source}</span>
+                            <div>
+                                <button class="btn-copy-one" onclick="copySingleUrl('${a.url}')">📋 Copy Link</button>
+                                <button class="btn-del-one" onclick="deleteSavedItem(${i})">✕</button>
+                            </div>
+                        </div>
                     </div>
                 `).join('');
             }
@@ -1044,22 +963,36 @@
             document.getElementById('savedModal').style.display = 'none';
         }
 
+        function copySingleUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast("📋 Link copy bhayo! NotebookLM ma paste garnus.");
+            });
+        }
+
+        function deleteSavedItem(idx) {
+            let saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
+            saved.splice(idx, 1);
+            localStorage.setItem('news24_saved_articles', JSON.stringify(saved));
+            updateSavedCount();
+            openSavedModal();
+        }
+
         function copyAllSavedMarkdown() {
             const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
             if (saved.length === 0) {
                 showToast("Save bhayeko khabar chaina!");
                 return;
             }
-            let md = "# News24 Saved Articles for NotebookLM\n\n";
+            let md = "# News24 Saved Sources for NotebookLM\n\n";
             saved.forEach((a, i) => {
-                md += `### ${i+1}. ${a.title}\n- Link: ${a.url}\n- Source: ${a.source}\n\n`;
+                md += `### ${i+1}. ${a.title}\n- URL: ${a.url}\n- Source: ${a.source}\n\n`;
             });
             navigator.clipboard.writeText(md).then(() => {
-                showToast("📋 Sabai khabar Markdown ma copy bhayo!");
+                showToast("📋 Sabai links copy bhayo! NotebookLM ma Add Sources ma paste garnus.");
             });
         }
 
-        // Functional Share Handler with Native Sheet + Clipboard Toast Fallback
+        // Functional Share Handler with Native Sheet
         async function handleShare(event, title, url) {
             if (event) {
                 event.preventDefault();
@@ -1100,7 +1033,7 @@
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 2500);
+            }, 3000);
         }
 
         function setCategory(cat, btn) {
@@ -1139,11 +1072,11 @@
             navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg fail:', err));
         }
 
-        // Auto-refresh every 5 minutes
+        // Auto-refresh every 5 minutes (Fetches new stories automatically)
         setInterval(fetchLiveNews, 300000);
 
-        // Load Cached first, then fetch live
-        const cached = localStorage.getItem('cached_news_pro');
+        // Load Cached data first for instant start
+        const cached = localStorage.getItem('cached_news_clean');
         if (cached) {
             try {
                 const parsed = JSON.parse(cached);
