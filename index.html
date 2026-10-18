@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
 
-    <title>News24 Pro — Romanized Nepali News</title>
+    <title>News24 Pro — Romanized Nepali News & NotebookLM</title>
 
     <style>
         :root {
@@ -27,11 +27,8 @@
             --pill-active: #0284c7;
             --pill-bg: #1e293b;
             --breaking-bg: linear-gradient(90deg, #991b1b, #dc2626);
-            --badge-nepal: #ef4444;
-            --badge-mancity: #6cabdd;
-            --badge-tech: #10b981;
-            --badge-world: #3b82f6;
             --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --notebook-btn: #7c3aed;
         }
 
         [data-theme="light"] {
@@ -47,6 +44,7 @@
             --pill-bg: #e2e8f0;
             --breaking-bg: linear-gradient(90deg, #b91c1c, #ef4444);
             --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --notebook-btn: #6d28d9;
         }
 
         * {
@@ -73,7 +71,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(9, 13, 22, 0.9);
+            background: rgba(9, 13, 22, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
@@ -82,7 +80,7 @@
         }
 
         [data-theme="light"] header {
-            background: rgba(248, 250, 252, 0.9);
+            background: rgba(248, 250, 252, 0.92);
         }
 
         .header-top {
@@ -121,30 +119,23 @@
             gap: 8px;
         }
 
-        .live-tag {
+        .saved-badge-btn {
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            color: #c4b5fd;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 11px;
-            color: #4ade80;
-            background: rgba(74, 222, 128, 0.12);
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s;
         }
 
-        .pulse-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #4ade80;
-            border-radius: 50%;
-            animation: pulse 1.8s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
-            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        .saved-badge-btn:active {
+            transform: scale(0.92);
         }
 
         .icon-btn {
@@ -378,7 +369,6 @@
             gap: 8px;
         }
 
-        /* Romanized Nepali Title */
         .card-roman-title {
             font-size: 16px;
             font-weight: 800;
@@ -386,7 +376,6 @@
             color: var(--text-primary);
         }
 
-        /* Original Headline subtext */
         .card-orig-title {
             font-size: 12px;
             color: var(--text-secondary);
@@ -408,7 +397,7 @@
             overflow: hidden;
         }
 
-        /* Separate Card Bottom Action Bar */
+        /* Card Bottom Action Bar */
         .card-actions {
             display: flex;
             justify-content: space-between;
@@ -416,37 +405,143 @@
             padding: 10px 14px 12px;
             border-top: 1px solid var(--border);
             background: rgba(0, 0, 0, 0.08);
+            gap: 8px;
         }
 
         .read-btn {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--accent);
             font-weight: 700;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 4px;
+            flex: 1;
         }
 
-        .btn-share {
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
             background: var(--pill-bg);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            padding: 6px 12px;
+            padding: 6px 11px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
+            white-space: nowrap;
         }
 
-        .btn-share:active {
+        .btn-action:active {
             transform: scale(0.92);
-            background: var(--accent);
+        }
+
+        .btn-notebook {
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(124, 58, 237, 0.4);
+            color: #c4b5fd;
+        }
+
+        .btn-notebook:active {
+            background: var(--notebook-btn);
             color: #ffffff;
+        }
+
+        /* Modal for Saved Articles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: var(--pill-bg);
+            color: var(--text-primary);
+        }
+
+        .saved-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .saved-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .saved-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
         }
 
         /* Toast Notification */
@@ -465,6 +560,8 @@
             z-index: 1000;
             transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             pointer-events: none;
+            max-width: 90%;
+            text-align: center;
         }
 
         .toast.show {
@@ -514,10 +611,9 @@
             </div>
             
             <div class="header-controls">
-                <div class="live-tag">
-                    <span class="pulse-dot"></span>
-                    <span>Live 24h</span>
-                </div>
+                <button class="saved-badge-btn" onclick="openSavedModal()" title="NotebookLM Saved">
+                    📓 <span id="savedCount">0</span>
+                </button>
                 <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Theme">🌙</button>
                 <button class="icon-btn" id="refreshBtn" onclick="fetchLiveNews()" title="Refresh">↻</button>
             </div>
@@ -550,15 +646,33 @@
         </div>
     </main>
 
+    <!-- Modal for NotebookLM Saved Articles -->
+    <div id="savedModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📓 NotebookLM Saved Articles</h3>
+                <button class="icon-btn" onclick="closeSavedModal()">✕</button>
+            </div>
+            <div class="modal-body" id="savedListContainer">
+                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">Kehi khabar save bhayeko chaina.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-primary" onclick="window.open('https://notebooklm.google.com/', '_blank')">🚀 Open NotebookLM</button>
+                <button class="btn-modal btn-secondary" onclick="copyAllSavedMarkdown()">📋 Copy All</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">📋 Link copy bhayo!</div>
 
     <script>
-        // Comprehensive News Feeds from Top Portals
+        // Comprehensive News Feeds from Top Portals (Added Nagarik News!)
         const FEEDS = [
             // Nepal Portals (Native Devanagari auto-romanized + English)
             { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://www.onlinekhabar.com/feed', isNepali: true },
             { id: 'nepal', name: 'Ratopati', class: 'src-nepal', url: 'https://www.ratopati.com/feed', isNepali: true },
+            { id: 'nepal', name: 'Nagarik News', class: 'src-nepal', url: 'https://nagariknews.nagariknetwork.com/feed', isNepali: true },
             { id: 'nepal', name: 'Setopati', class: 'src-nepal', url: 'https://www.setopati.com/feed', isNepali: true },
             { id: 'nepal', name: 'OnlineKhabar English', class: 'src-nepal', url: 'https://english.onlinekhabar.com/feed', isNepali: false },
             
@@ -589,13 +703,10 @@
         // High-Precision Devanagari to Romanized Nepali Transliterator
         function toRomanizedNepali(text) {
             if (!text) return "";
-            
-            // Check if text has Devanagari characters
             if (!/[\u0900-\u097F]/.test(text)) {
-                return text; // Already in English/Roman
+                return text;
             }
 
-            // Word Dictionary for accurate, natural spoken Nepali spelling
             const wordMap = {
                 "काठमाडौं": "Kathmandu", "काठमाडौँ": "Kathmandu", "नेपाल": "Nepal",
                 "प्रधानमन्त्री": "Pradhanmantri", "सरकार": "Sarkar", "प्रहरी": "Prahari",
@@ -606,7 +717,8 @@
                 "अभिनेता": "Abhineta", "गोली": "Goli", "निर्वाचन": "Nirbachan",
                 "एमाले": "UML", "कांग्रेस": "Congress", "माओवादी": "Maoist",
                 "रवि": "Rabi", "ओली": "Oli", "देउवा": "Deuba", "प्रचण्ड": "Prachanda",
-                "क्रिकेट": "Cricket", "फुटबल": "Football", "मन्त्री": "Mantri"
+                "क्रिकेट": "Cricket", "फुटबल": "Football", "मन्त्री": "Mantri",
+                "पक्राउ": "Pakrau", "प्रतियोगिता": "Pratiyogita"
             };
 
             let processed = text;
@@ -668,16 +780,25 @@
             if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
             if (item.enclosure && item.enclosure.link && item.enclosure.link.startsWith('http')) return item.enclosure.link;
             
-            // Regex extraction from content/description HTML
             const combinedHtml = (item.description || '') + ' ' + (item.content || '');
             const match = combinedHtml.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
             if (match && match[1]) return match[1];
 
-            // Layer 3: High-Res SVG Gradient Fallback
             return FALLBACKS[category] || FALLBACKS.world;
         }
 
-        // Relative time in Romanized Nepali (Nepal Time UTC+5:45 Aware)
+        // CRITICAL BUG FIX: Parse RSS2JSON UTC date properly (Appends ' UTC' if timezone is missing)
+        function parseFeedDate(pubDateStr) {
+            if (!pubDateStr) return Date.now();
+            let s = pubDateStr.trim();
+            // If string is e.g. "2026-10-18 16:44:55", force UTC parsing
+            if (!s.includes('Z') && !s.includes('+') && !s.includes('GMT') && !s.includes('UTC')) {
+                return new Date(s.replace(/-/g, '/') + ' UTC').getTime();
+            }
+            return new Date(s).getTime();
+        }
+
+        // Relative time in Romanized Nepali (Now accurate to the minute!)
         function getNepaliTime(timestamp) {
             const diffMs = Date.now() - timestamp;
             const mins = Math.max(1, Math.floor(diffMs / 60000));
@@ -700,8 +821,7 @@
             
             let fetchedItems = [];
             const now = Date.now();
-            // 48-Hour generous window to ensure we always have 80+ articles without timezone drops
-            const cutoff = now - (48 * 60 * 60 * 1000);
+            const cutoff = now - (48 * 60 * 60 * 1000); // 48-Hour window
 
             try {
                 const requests = FEEDS.map(feed => 
@@ -717,7 +837,7 @@
                                         romanTitle: romanTitle,
                                         isNepaliOrigin: feed.isNepali,
                                         link: item.link,
-                                        pubDate: new Date(item.pubDate).getTime() || now,
+                                        pubDate: parseFeedDate(item.pubDate),
                                         snippet: toRomanizedNepali(cleanHtml(item.description || '')),
                                         source: feed.name,
                                         sourceClass: feed.class,
@@ -741,8 +861,9 @@
 
                 updatePillCounts();
                 checkBreakingNews();
+                updateSavedCount();
 
-                // Save to localStorage for instant offline access
+                // Save to localStorage
                 if (allArticles.length > 0) {
                     localStorage.setItem('cached_news_pro', JSON.stringify({
                         items: allArticles,
@@ -796,7 +917,7 @@
                 filtered = filtered.filter(item => 
                     item.romanTitle.toLowerCase().includes(q) || 
                     item.origTitle.toLowerCase().includes(q) || 
-                    item.snippet.toLowerCase().includes(q) ||
+                    item.snippet.toLowerCase().includes(q) || 
                     item.source.toLowerCase().includes(q)
                 );
             }
@@ -813,10 +934,14 @@
                 return;
             }
 
-            container.innerHTML = filtered.map((item, idx) => {
-                // If original title was in Devanagari, show both Romanized Nepali + original Devanagari
+            container.innerHTML = filtered.map((item) => {
                 const subTitleHtml = item.isNepaliOrigin ? 
                     `<div class="card-orig-title">🇳🇵 <b>Asli:</b> ${item.origTitle}</div>` : '';
+
+                const safeTitle = item.romanTitle.replace(/'/g, "\\'");
+                const safeUrl = item.link;
+                const safeSource = item.source.replace(/'/g, "\\'");
+                const safeSnippet = (item.snippet || '').substring(0, 150).replace(/'/g, "\\'");
 
                 return `
                 <div class="news-card">
@@ -833,14 +958,105 @@
                         </div>
                     </a>
                     <div class="card-actions">
-                        <a href="${item.link}" target="_blank" rel="noopener" class="read-btn">Pura Padhna Yaha Thichnus →</a>
-                        <button type="button" class="btn-share" onclick="handleShare(event, '${item.romanTitle.replace(/'/g, "\\'")}', '${item.link}')">
-                            📤 Share
-                        </button>
+                        <a href="${item.link}" target="_blank" rel="noopener" class="read-btn">Padhnus →</a>
+                        <div class="action-buttons">
+                            <button type="button" class="btn-action btn-notebook" onclick="saveToNotebookLM(event, '${safeTitle}', '${safeUrl}', '${safeSource}', '${safeSnippet}')" title="Save to NotebookLM">
+                                📓 NotebookLM
+                            </button>
+                            <button type="button" class="btn-action btn-share" onclick="handleShare(event, '${safeTitle}', '${safeUrl}')" title="Share Article">
+                                📤 Share
+                            </button>
+                        </div>
                     </div>
                 </div>
                 `;
             }).join('');
+        }
+
+        // NotebookLM Integration: Calls Port 5051 API with LocalStorage Fallback
+        async function saveToNotebookLM(event, title, url, source, snippet) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            showToast("⏳ NotebookLM ma add gardai...");
+            const apiHost = window.location.hostname || '192.168.1.127';
+            
+            try {
+                const res = await fetch(`http://${apiHost}:5051/save-article`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, url, source, snippet })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast(`📓 NotebookLM ma save bhayo! (${data.total_saved} saved)`);
+                    updateSavedCount();
+                } else {
+                    saveToLocalStorage(title, url, source, snippet);
+                }
+            } catch (err) {
+                // If backend API isn't reached (e.g. on mobile outside Wi-Fi), save locally
+                saveToLocalStorage(title, url, source, snippet);
+            }
+        }
+
+        function saveToLocalStorage(title, url, source, snippet) {
+            let saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
+            if (!saved.some(a => a.url === url)) {
+                saved.unshift({ title, url, source, snippet, saved_at: new Date().toLocaleTimeString() });
+                localStorage.setItem('news24_saved_articles', JSON.stringify(saved));
+                showToast(`📓 Saved to Notebook queue! (${saved.length} saved)`);
+                updateSavedCount();
+            } else {
+                showToast(`📓 Paila nai save bhayeko cha!`);
+            }
+        }
+
+        function updateSavedCount() {
+            // Count from local storage or fetch from API
+            const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
+            const badge = document.getElementById('savedCount');
+            if (badge) badge.innerText = saved.length;
+        }
+
+        // Modal for viewing saved articles
+        function openSavedModal() {
+            const modal = document.getElementById('savedModal');
+            const container = document.getElementById('savedListContainer');
+            const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
+            
+            if (saved.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 30px;">Kehi khabar save bhayeko chaina.<br><small>News card ko 📓 NotebookLM button thichnus!</small></p>`;
+            } else {
+                container.innerHTML = saved.map((a, i) => `
+                    <div class="saved-item">
+                        <div class="saved-title">${i+1}. ${a.title}</div>
+                        <div class="saved-meta">Source: ${a.source} | <a href="${a.url}" target="_blank" style="color:var(--accent);">Link ↗</a></div>
+                    </div>
+                `).join('');
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeSavedModal() {
+            document.getElementById('savedModal').style.display = 'none';
+        }
+
+        function copyAllSavedMarkdown() {
+            const saved = JSON.parse(localStorage.getItem('news24_saved_articles') || '[]');
+            if (saved.length === 0) {
+                showToast("Save bhayeko khabar chaina!");
+                return;
+            }
+            let md = "# News24 Saved Articles for NotebookLM\n\n";
+            saved.forEach((a, i) => {
+                md += `### ${i+1}. ${a.title}\n- Link: ${a.url}\n- Source: ${a.source}\n\n`;
+            });
+            navigator.clipboard.writeText(md).then(() => {
+                showToast("📋 Sabai khabar Markdown ma copy bhayo!");
+            });
         }
 
         // Functional Share Handler with Native Sheet + Clipboard Toast Fallback
@@ -859,15 +1075,12 @@
                     });
                     return;
                 } catch (err) {
-                    // User dismissed or share sheet cancelled
                     if (err.name !== 'AbortError') {
                         copyToClipboard(url);
                     }
                     return;
                 }
             }
-            
-            // Fallback for browsers without Web Share API
             copyToClipboard(url);
         }
 
@@ -939,6 +1152,7 @@
                 renderNews();
             } catch (e) {}
         }
+        updateSavedCount();
         fetchLiveNews();
     </script>
 </body>
