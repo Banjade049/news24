@@ -274,6 +274,120 @@
             box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
         }
 
+        /* ===== WIDGETS STRIP ===== */
+        .widgets-strip {
+            display: flex;
+            gap: 12px;
+            padding: 14px 14px 0;
+            max-width: 600px;
+            margin: 0 auto;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .widgets-strip::-webkit-scrollbar { display: none; }
+
+        .widget-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            min-width: 175px;
+            flex-shrink: 0;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Weather Widget */
+        .widget-weather {
+            background: linear-gradient(135deg, #0c4a6e, #0369a1);
+            border-color: #0284c7;
+            color: #ffffff;
+            min-width: 170px;
+        }
+        [data-theme="light"] .widget-weather {
+            background: linear-gradient(135deg, #bae6fd, #7dd3fc);
+            border-color: #38bdf8;
+            color: #0c4a6e;
+        }
+        .weather-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .weather-emoji {
+            font-size: 32px;
+            line-height: 1;
+        }
+        .weather-temp {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .weather-label {
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0.85;
+            margin-bottom: 2px;
+        }
+        .weather-details {
+            display: flex;
+            gap: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Man City Widget */
+        .widget-mancity {
+            background: linear-gradient(135deg, #1c2c5b, #2d4a8a);
+            border-color: #6cabdd;
+            color: #ffffff;
+            min-width: 190px;
+        }
+        [data-theme="light"] .widget-mancity {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: #6cabdd;
+            color: #1c2c5b;
+        }
+        .mcfc-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        .mcfc-score-line {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .mcfc-status {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.75;
+        }
+        .mcfc-live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin-right: 4px;
+            animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         /* Main Container */
         main {
             padding: 14px 14px;
@@ -411,20 +525,20 @@
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-action {
             background: var(--pill-bg);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            padding: 6px 11px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
             white-space: nowrap;
@@ -443,6 +557,22 @@
         .btn-notebook:active {
             background: var(--notebook-btn);
             color: #ffffff;
+        }
+
+        .btn-tts {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }
+        .btn-tts.speaking {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            animation: speakPulse 1s infinite;
+        }
+        @keyframes speakPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         /* Modal for Saved Articles */
@@ -553,6 +683,128 @@
             cursor: pointer;
         }
 
+        /* ===== QUIZ STYLES ===== */
+        .quiz-fab {
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom) + 24px);
+            right: 18px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            border: none;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.5);
+            cursor: pointer;
+            z-index: 90;
+            transition: transform 0.2s;
+        }
+        .quiz-fab:active { transform: scale(0.9); }
+
+        .quiz-container {
+            padding: 0;
+        }
+        .quiz-progress {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .quiz-dot {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            transition: background 0.3s;
+        }
+        .quiz-dot.done { background: #22c55e; }
+        .quiz-dot.wrong { background: #ef4444; }
+        .quiz-dot.current { background: var(--accent); }
+
+        .quiz-question {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .quiz-headline-box {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.45;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .quiz-opt-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .quiz-opt-btn:active { transform: scale(0.97); }
+        .quiz-opt-btn.correct {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+        }
+        .quiz-opt-btn.wrong {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        .quiz-opt-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .quiz-result-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .quiz-result-score {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+        .quiz-result-msg {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .quiz-replay-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -623,6 +875,7 @@
                 <button class="saved-badge-btn" onclick="openSavedModal()" title="NotebookLM Saved Articles">
                     📓 <span id="savedCount">0</span>
                 </button>
+                <button class="icon-btn" id="quizBtn" onclick="openQuiz()" title="Daily News Quiz">🎮</button>
                 <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Theme">🌙</button>
                 <button class="icon-btn" id="refreshBtn" onclick="fetchLiveNews()" title="Refresh">↻</button>
             </div>
@@ -641,6 +894,30 @@
             <button class="cat-pill" onclick="setCategory('tech', this)">💻 IT & Internet <span class="count" id="count-tech">0</span></button>
         </div>
     </header>
+
+    <!-- ===== LIVE WIDGETS STRIP ===== -->
+    <div class="widgets-strip">
+        <!-- Weather Widget -->
+        <div class="widget-card widget-weather" id="weatherWidget">
+            <div class="weather-label">📍 Kathmandu</div>
+            <div class="weather-top">
+                <span class="weather-emoji" id="weatherEmoji">⏳</span>
+                <span class="weather-temp" id="weatherTemp">--°</span>
+            </div>
+            <div class="weather-label" id="weatherDesc">Loading...</div>
+            <div class="weather-details">
+                <span id="weatherHumidity">💧 --%</span>
+                <span id="weatherWind">💨 -- km/h</span>
+            </div>
+        </div>
+
+        <!-- Man City Score Widget -->
+        <div class="widget-card widget-mancity" id="mcfcWidget">
+            <div class="mcfc-header">⚽ MAN CITY</div>
+            <div class="mcfc-score-line" id="mcfcScoreLine">Loading...</div>
+            <div class="mcfc-status" id="mcfcStatus">Fetching latest...</div>
+        </div>
+    </div>
 
     <main>
         <div class="feed-info">
@@ -672,11 +949,29 @@
         </div>
     </div>
 
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎮 Daily News Quiz</h3>
+                <button class="icon-btn" onclick="closeQuiz()">✕</button>
+            </div>
+            <div class="modal-body quiz-container" id="quizBody">
+                <!-- Quiz content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz FAB -->
+    <button class="quiz-fab" onclick="openQuiz()" title="Daily News Quiz" id="quizFab">🎮</button>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">📋 Link copy bhayo!</div>
 
     <script>
-        // Feeds Configuration (Original Clean Content — No transliteration mangling!)
+        // ==========================================
+        // FEEDS CONFIGURATION
+        // ==========================================
         const FEEDS = [
             // Nepal Portals (Native Clean Headlines)
             { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://www.onlinekhabar.com/feed' },
@@ -708,6 +1003,338 @@
 
         let allArticles = [];
         let currentCategory = 'all';
+
+        // ==========================================
+        // 1. WEATHER WIDGET (Open-Meteo — No API key!)
+        // ==========================================
+        const WMO_WEATHER = {
+            0: { emoji: '☀️', desc: 'Clear Sky' },
+            1: { emoji: '🌤️', desc: 'Mainly Clear' },
+            2: { emoji: '⛅', desc: 'Partly Cloudy' },
+            3: { emoji: '☁️', desc: 'Overcast' },
+            45: { emoji: '🌫️', desc: 'Foggy' },
+            48: { emoji: '🌫️', desc: 'Rime Fog' },
+            51: { emoji: '🌦️', desc: 'Light Drizzle' },
+            53: { emoji: '🌦️', desc: 'Moderate Drizzle' },
+            55: { emoji: '🌦️', desc: 'Dense Drizzle' },
+            61: { emoji: '🌧️', desc: 'Slight Rain' },
+            63: { emoji: '🌧️', desc: 'Moderate Rain' },
+            65: { emoji: '🌧️', desc: 'Heavy Rain' },
+            66: { emoji: '🌨️', desc: 'Freezing Rain' },
+            67: { emoji: '🌨️', desc: 'Heavy Freezing Rain' },
+            71: { emoji: '❄️', desc: 'Slight Snow' },
+            73: { emoji: '❄️', desc: 'Moderate Snow' },
+            75: { emoji: '❄️', desc: 'Heavy Snow' },
+            77: { emoji: '❄️', desc: 'Snow Grains' },
+            80: { emoji: '🌧️', desc: 'Rain Showers' },
+            81: { emoji: '🌧️', desc: 'Moderate Showers' },
+            82: { emoji: '🌧️', desc: 'Heavy Showers' },
+            85: { emoji: '🌨️', desc: 'Snow Showers' },
+            86: { emoji: '🌨️', desc: 'Heavy Snow Showers' },
+            95: { emoji: '⛈️', desc: 'Thunderstorm' },
+            96: { emoji: '⛈️', desc: 'Thunderstorm + Hail' },
+            99: { emoji: '⛈️', desc: 'Severe Thunderstorm' }
+        };
+
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=27.7172&longitude=85.3240&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia/Kathmandu');
+                const data = await res.json();
+                const c = data.current;
+                const wmo = WMO_WEATHER[c.weather_code] || { emoji: '🌡️', desc: 'Unknown' };
+
+                document.getElementById('weatherEmoji').textContent = wmo.emoji;
+                document.getElementById('weatherTemp').textContent = Math.round(c.temperature_2m) + '°C';
+                document.getElementById('weatherDesc').textContent = wmo.desc;
+                document.getElementById('weatherHumidity').textContent = '💧 ' + c.relative_humidity_2m + '%';
+                document.getElementById('weatherWind').textContent = '💨 ' + c.wind_speed_10m + ' km/h';
+
+                // Cache weather
+                localStorage.setItem('cached_weather', JSON.stringify({ data: c, wmo: wmo, time: Date.now() }));
+            } catch (e) {
+                // Try cached
+                const cached = localStorage.getItem('cached_weather');
+                if (cached) {
+                    const { data: c, wmo } = JSON.parse(cached);
+                    document.getElementById('weatherEmoji').textContent = wmo.emoji;
+                    document.getElementById('weatherTemp').textContent = Math.round(c.temperature_2m) + '°C';
+                    document.getElementById('weatherDesc').textContent = wmo.desc + ' (cached)';
+                    document.getElementById('weatherHumidity').textContent = '💧 ' + c.relative_humidity_2m + '%';
+                    document.getElementById('weatherWind').textContent = '💨 ' + c.wind_speed_10m + ' km/h';
+                }
+            }
+        }
+
+        // ==========================================
+        // 2. MAN CITY SCORE WIDGET (RSS-based + optional football-data.org)
+        // ==========================================
+        function updateManCityWidget() {
+            const mcfcArticles = allArticles.filter(a => a.category === 'mancity');
+            const scoreLine = document.getElementById('mcfcScoreLine');
+            const statusEl = document.getElementById('mcfcStatus');
+
+            if (mcfcArticles.length === 0) {
+                scoreLine.textContent = 'No updates yet';
+                statusEl.textContent = 'Waiting for RSS...';
+                return;
+            }
+
+            // Try to find score in headlines: "Team A X-Y Team B" pattern
+            const scoreRegex = /(.+?)\s+(\d+)\s*[-–]\s*(\d+)\s+(.+)/;
+            let foundScore = null;
+
+            for (const art of mcfcArticles) {
+                const match = art.title.match(scoreRegex);
+                if (match) {
+                    foundScore = {
+                        home: match[1].trim(),
+                        homeGoals: match[2],
+                        awayGoals: match[3],
+                        away: match[4].trim(),
+                        time: art.pubDate,
+                        link: art.link
+                    };
+                    break;
+                }
+            }
+
+            if (foundScore) {
+                scoreLine.innerHTML = `<span style="cursor:pointer" onclick="window.open('${foundScore.link}','_blank')">${foundScore.home} <b>${foundScore.homeGoals} - ${foundScore.awayGoals}</b> ${foundScore.away}</span>`;
+                statusEl.textContent = getNepaliTime(foundScore.time);
+            } else {
+                // Show latest headline instead
+                const latest = mcfcArticles[0];
+                const shortTitle = latest.title.length > 50 ? latest.title.substring(0, 47) + '...' : latest.title;
+                scoreLine.innerHTML = `<span style="cursor:pointer; font-size:13px;" onclick="window.open('${latest.link}','_blank')">${shortTitle}</span>`;
+                statusEl.textContent = getNepaliTime(latest.pubDate) + ' • ' + latest.source;
+            }
+
+            // Try football-data.org for LIVE scores if user has set API key
+            const footballApiKey = localStorage.getItem('football_api_key');
+            if (footballApiKey) {
+                fetchLiveManCityScore(footballApiKey);
+            }
+        }
+
+        async function fetchLiveManCityScore(apiKey) {
+            try {
+                const res = await fetch('https://api.football-data.org/v4/teams/65/matches?status=IN_PLAY,LIVE,PAUSED', {
+                    headers: { 'X-Auth-Token': apiKey }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+
+                if (data.matches && data.matches.length > 0) {
+                    const m = data.matches[0];
+                    const scoreLine = document.getElementById('mcfcScoreLine');
+                    const statusEl = document.getElementById('mcfcStatus');
+
+                    scoreLine.innerHTML = `${m.homeTeam.name} <b>${m.score.fullTime.home ?? 0} - ${m.score.fullTime.away ?? 0}</b> ${m.awayTeam.name}`;
+                    statusEl.innerHTML = `<span class="mcfc-live-dot"></span>LIVE • ${m.competition.name}`;
+                }
+            } catch (e) {
+                // Silently fail — RSS fallback already shown
+            }
+        }
+
+        // ==========================================
+        // 3. READ ALOUD — Text-to-Speech (Web Speech API)
+        // ==========================================
+        let currentSpeaking = null;
+
+        function speakArticle(event, title, snippet, btnId) {
+            if (event) { event.preventDefault(); event.stopPropagation(); }
+
+            const synth = window.speechSynthesis;
+            const btn = document.getElementById(btnId);
+
+            // If already speaking this one, stop it
+            if (currentSpeaking === btnId) {
+                synth.cancel();
+                currentSpeaking = null;
+                if (btn) { btn.classList.remove('speaking'); btn.innerHTML = '🔊'; }
+                return;
+            }
+
+            // Stop any previous
+            synth.cancel();
+            document.querySelectorAll('.btn-tts.speaking').forEach(b => {
+                b.classList.remove('speaking');
+                b.innerHTML = '🔊';
+            });
+
+            const textToSpeak = title + '. ' + (snippet || '');
+            const utter = new SpeechSynthesisUtterance(textToSpeak);
+
+            // Try to detect language (Devanagari = Nepali/Hindi)
+            const hasDevanagari = /[\u0900-\u097F]/.test(textToSpeak);
+            if (hasDevanagari) {
+                utter.lang = 'hi-IN'; // Hindi voice works for Nepali too
+            } else {
+                utter.lang = 'en-US';
+            }
+            utter.rate = 0.95;
+            utter.pitch = 1;
+
+            utter.onstart = () => {
+                currentSpeaking = btnId;
+                if (btn) { btn.classList.add('speaking'); btn.innerHTML = '⏹️'; }
+            };
+            utter.onend = () => {
+                currentSpeaking = null;
+                if (btn) { btn.classList.remove('speaking'); btn.innerHTML = '🔊'; }
+            };
+            utter.onerror = () => {
+                currentSpeaking = null;
+                if (btn) { btn.classList.remove('speaking'); btn.innerHTML = '🔊'; }
+                showToast('TTS available chaina yo language ma');
+            };
+
+            synth.speak(utter);
+        }
+
+        function stopAllSpeech() {
+            window.speechSynthesis.cancel();
+            currentSpeaking = null;
+            document.querySelectorAll('.btn-tts.speaking').forEach(b => {
+                b.classList.remove('speaking');
+                b.innerHTML = '🔊';
+            });
+        }
+
+        // ==========================================
+        // 4. DAILY NEWS QUIZ (Auto-generated from headlines)
+        // ==========================================
+        let quizQuestions = [];
+        let quizIndex = 0;
+        let quizScore = 0;
+        const QUIZ_COUNT = 5;
+
+        function generateQuiz() {
+            quizQuestions = [];
+            quizIndex = 0;
+            quizScore = 0;
+
+            if (allArticles.length < 8) {
+                showToast('News load huna paryo quiz khelna — refresh garnus!');
+                return false;
+            }
+
+            // Get unique sources
+            const allSources = [...new Set(allArticles.map(a => a.source))];
+            // Get articles with decent titles
+            const good = allArticles.filter(a => a.title.length > 15);
+
+            // Shuffle and pick QUIZ_COUNT
+            const shuffled = good.sort(() => Math.random() - 0.5).slice(0, QUIZ_COUNT);
+
+            shuffled.forEach(article => {
+                const correctSource = article.source;
+                // Pick 3 wrong sources
+                const wrongSources = allSources
+                    .filter(s => s !== correctSource)
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3);
+
+                const options = [correctSource, ...wrongSources].sort(() => Math.random() - 0.5);
+
+                quizQuestions.push({
+                    headline: article.title,
+                    correctAnswer: correctSource,
+                    options: options,
+                    category: article.category
+                });
+            });
+
+            return true;
+        }
+
+        function openQuiz() {
+            if (!generateQuiz()) return;
+            document.getElementById('quizModal').style.display = 'flex';
+            renderQuizQuestion();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+            stopAllSpeech();
+        }
+
+        function renderQuizQuestion() {
+            const body = document.getElementById('quizBody');
+
+            if (quizIndex >= quizQuestions.length) {
+                // Show results!
+                const pct = Math.round((quizScore / QUIZ_COUNT) * 100);
+                let emoji, msg;
+                if (pct === 100) { emoji = '🏆'; msg = 'Perfect! Timi ta news guru raichau!'; }
+                else if (pct >= 80) { emoji = '🌟'; msg = 'Excellent! Dherai ramro!'; }
+                else if (pct >= 60) { emoji = '👍'; msg = 'Good job! Aru news pani padha hai!'; }
+                else if (pct >= 40) { emoji = '🤔'; msg = 'OK cha, aru news pani padha!'; }
+                else { emoji = '📚'; msg = 'Aru news padha ani feri try gara!'; }
+
+                body.innerHTML = `
+                    <div class="quiz-result">
+                        <div class="quiz-result-emoji">${emoji}</div>
+                        <div class="quiz-result-score">${quizScore} / ${QUIZ_COUNT}</div>
+                        <div class="quiz-result-msg">${msg}</div>
+                        <button class="quiz-replay-btn" onclick="openQuiz()">🔄 Feri Khela</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = quizQuestions[quizIndex];
+            const catEmojis = { nepal: '🇳🇵', mancity: '⚽', world: '🌍', tech: '💻' };
+
+            // Progress dots
+            let dots = '';
+            for (let i = 0; i < QUIZ_COUNT; i++) {
+                let cls = '';
+                if (i < quizIndex) cls = quizQuestions[i]._correct ? 'done' : 'wrong';
+                else if (i === quizIndex) cls = 'current';
+                dots += `<div class="quiz-dot ${cls}"></div>`;
+            }
+
+            body.innerHTML = `
+                <div class="quiz-progress">${dots}</div>
+                <div class="quiz-question">${catEmojis[q.category] || '📰'} Question ${quizIndex + 1}/${QUIZ_COUNT}</div>
+                <div class="quiz-question" style="font-size: 13px; color: var(--text-secondary); margin-top: -2px; margin-bottom: 8px;">Yo khabar kun portal le publish garyo?</div>
+                <div class="quiz-headline-box">"${q.headline}"</div>
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <button class="quiz-opt-btn" id="qopt-${i}" onclick="answerQuiz(${i}, '${opt.replace(/'/g, "\\'")}')">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function answerQuiz(idx, chosen) {
+            const q = quizQuestions[quizIndex];
+            const isCorrect = chosen === q.correctAnswer;
+            q._correct = isCorrect;
+
+            if (isCorrect) quizScore++;
+
+            // Highlight correct and wrong
+            q.options.forEach((opt, i) => {
+                const btn = document.getElementById(`qopt-${i}`);
+                if (!btn) return;
+                btn.disabled = true;
+                if (opt === q.correctAnswer) btn.classList.add('correct');
+                else if (i === idx && !isCorrect) btn.classList.add('wrong');
+            });
+
+            // Auto-advance after 1.2 seconds
+            setTimeout(() => {
+                quizIndex++;
+                renderQuizQuestion();
+            }, 1200);
+        }
+
+        // ==========================================
+        // CORE NEWS ENGINE
+        // ==========================================
 
         // 3-Layer Image Extraction Pipeline
         function extractImage(item, category) {
@@ -789,6 +1416,7 @@
                 updatePillCounts();
                 checkBreakingNews();
                 updateSavedCount();
+                updateManCityWidget();
 
                 // Save to localStorage so it works OFFLINE and even when laptop is OFF
                 if (allArticles.length > 0) {
@@ -860,10 +1488,12 @@
                 return;
             }
 
-            container.innerHTML = filtered.map((item) => {
-                const safeTitle = item.title.replace(/'/g, "\\'");
+            container.innerHTML = filtered.map((item, idx) => {
+                const safeTitle = item.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const safeUrl = item.link;
                 const safeSource = item.source.replace(/'/g, "\\'");
+                const safeSnippet = (item.snippet || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const ttsId = `tts-${idx}`;
 
                 return `
                 <div class="news-card">
@@ -881,11 +1511,14 @@
                     <div class="card-actions">
                         <a href="${item.link}" target="_blank" rel="noopener" class="read-btn">Padhnus →</a>
                         <div class="action-buttons">
+                            <button type="button" class="btn-action btn-tts" id="${ttsId}" onclick="speakArticle(event, '${safeTitle}', '${safeSnippet}', '${ttsId}')" title="Read Aloud">
+                                🔊
+                            </button>
                             <button type="button" class="btn-action btn-notebook" onclick="saveToNotebookLM(event, '${safeTitle}', '${safeUrl}', '${safeSource}')" title="NotebookLM ma save garne">
-                                📓 NotebookLM
+                                📓
                             </button>
                             <button type="button" class="btn-action btn-share" onclick="handleShare(event, '${safeTitle}', '${safeUrl}')" title="Share Article">
-                                📤 Share
+                                📤
                             </button>
                         </div>
                     </div>
@@ -893,6 +1526,10 @@
                 `;
             }).join('');
         }
+
+        // ==========================================
+        // NOTEBOOKLM & SHARE (Existing — unchanged)
+        // ==========================================
 
         // NotebookLM 100% Client-Side Storage: Works on Phone Even When Laptop is OFF!
         function saveToNotebookLM(event, title, url, source) {
@@ -1056,6 +1693,10 @@
             localStorage.setItem('theme_pref', next);
         }
 
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+
         // Initialize Theme
         const savedTheme = localStorage.getItem('theme_pref') || 
             (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
@@ -1075,6 +1716,10 @@
         // Auto-refresh every 5 minutes (Fetches new stories automatically)
         setInterval(fetchLiveNews, 300000);
 
+        // Weather refresh every 15 minutes
+        fetchWeather();
+        setInterval(fetchWeather, 900000);
+
         // Load Cached data first for instant start
         const cached = localStorage.getItem('cached_news_clean');
         if (cached) {
@@ -1082,6 +1727,7 @@
                 const parsed = JSON.parse(cached);
                 allArticles = parsed.items || [];
                 updatePillCounts();
+                updateManCityWidget();
                 renderNews();
             } catch (e) {}
         }
