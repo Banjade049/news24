@@ -1,4 +1,4 @@
-const CACHE_NAME = 'news24-v3';
+const CACHE_NAME = 'news24-v4';
 const STATIC_ASSETS = [
     './',
     './index.html',
@@ -28,8 +28,8 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-    // For API calls (RSS2JSON), use Network-First, fallback to Cache
-    if (e.request.url.includes('api.rss2json.com')) {
+    // For API calls (RSS2JSON, Feed2JSON, Open-Meteo), use Network-First, fallback to Cache
+    if (e.request.url.includes('api.rss2json.com') || e.request.url.includes('feed2json.org') || e.request.url.includes('open-meteo.com')) {
         e.respondWith(
             fetch(e.request)
                 .then((res) => {

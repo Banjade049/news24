@@ -973,24 +973,43 @@
         // FEEDS CONFIGURATION
         // ==========================================
         const FEEDS = [
-            // Nepal Portals (Native Clean Headlines)
+            // 🇳🇵 Nepal Portals (17 Top Verified Portals)
             { id: 'nepal', name: 'OnlineKhabar', class: 'src-nepal', url: 'https://www.onlinekhabar.com/feed' },
+            { id: 'nepal', name: 'BBC Nepali', class: 'src-nepal', url: 'https://www.bbc.com/nepali/index.xml' },
             { id: 'nepal', name: 'Ratopati', class: 'src-nepal', url: 'https://www.ratopati.com/feed' },
             { id: 'nepal', name: 'Nagarik News', class: 'src-nepal', url: 'https://nagariknews.nagariknetwork.com/feed' },
             { id: 'nepal', name: 'Setopati', class: 'src-nepal', url: 'https://www.setopati.com/feed' },
+            { id: 'nepal', name: 'Baahrakhari', class: 'src-nepal', url: 'https://baahrakhari.com/feed' },
+            { id: 'nepal', name: 'Nepal Live', class: 'src-nepal', url: 'https://nepallive.com/feed' },
+            { id: 'nepal', name: 'Himal Khabar', class: 'src-nepal', url: 'https://himalkhabar.com/feed' },
+            { id: 'nepal', name: 'Khabarhub', class: 'src-nepal', url: 'https://khabarhub.com/feed' },
+            { id: 'nepal', name: 'Bizmandu', class: 'src-nepal', url: 'https://bizmandu.com/feed' },
+            { id: 'nepal', name: 'Clickmandu', class: 'src-nepal', url: 'https://clickmandu.com/feed' },
+            { id: 'nepal', name: 'Deshsanchar', class: 'src-nepal', url: 'https://deshsanchar.com/feed' },
+            { id: 'nepal', name: 'Ujyaalo Online', class: 'src-nepal', url: 'https://ujyaaloonline.com/feed' },
+            { id: 'nepal', name: 'Lokaantar', class: 'src-nepal', url: 'https://lokaantar.com/feed' },
+            { id: 'nepal', name: 'Reporters Nepal', class: 'src-nepal', url: 'https://reportersnepal.com/feed' },
+            { id: 'nepal', name: 'Swasthya Khabar', class: 'src-nepal', url: 'https://swasthyakhabar.com/feed' },
             { id: 'nepal', name: 'OnlineKhabar English', class: 'src-nepal', url: 'https://english.onlinekhabar.com/feed' },
             
-            // Manchester City & Football
+            // ⚽ Manchester City & Football
             { id: 'mancity', name: 'BBC Man City', class: 'src-mancity', url: 'https://feeds.bbci.co.uk/sport/football/teams/manchester-city/rss.xml' },
             { id: 'mancity', name: 'Sky Sports Man City', class: 'src-mancity', url: 'https://www.skysports.com/rss/12040' },
+            { id: 'mancity', name: 'City Xtra', class: 'src-mancity', url: 'https://cityxtra.co.uk/feed/' },
             
-            // World News
+            // 🌍 World News
             { id: 'world', name: 'BBC World', class: 'src-world', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
             { id: 'world', name: 'Al Jazeera', class: 'src-world', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+            { id: 'world', name: 'CNN World', class: 'src-world', url: 'http://rss.cnn.com/rss/edition_world.rss' },
+            { id: 'world', name: 'Guardian World', class: 'src-world', url: 'https://www.theguardian.com/world/rss' },
             
-            // IT & Internet
+            // 💻 IT & Internet
             { id: 'tech', name: 'TechCrunch', class: 'src-tech', url: 'https://techcrunch.com/feed/' },
-            { id: 'tech', name: 'The Verge', class: 'src-tech', url: 'https://www.theverge.com/rss/index.xml' }
+            { id: 'tech', name: 'The Verge', class: 'src-tech', url: 'https://www.theverge.com/rss/index.xml' },
+            { id: 'tech', name: 'Wired', class: 'src-tech', url: 'https://www.wired.com/feed/rss' },
+            { id: 'tech', name: 'Ars Technica', class: 'src-tech', url: 'https://feeds.arstechnica.com/arstechnica/index' },
+            { id: 'tech', name: 'Engadget', class: 'src-tech', url: 'https://www.engadget.com/rss.xml' },
+            { id: 'tech', name: 'GSMArena', class: 'src-tech', url: 'https://www.gsmarena.com/rss-news-reviews.php3' }
         ];
 
         // Guaranteed High-Definition SVG Fallbacks
@@ -1375,6 +1394,61 @@
             return (temp.textContent || temp.innerText || '').trim();
         }
 
+        async function fetchSingleFeed(feed) {
+            // 1. Primary: Try rss2json with 5s timeout
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
+                    return data.items.map(item => ({
+                        title: cleanHtml(item.title),
+                        link: item.link,
+                        pubDate: parseFeedDate(item.pubDate),
+                        snippet: cleanHtml(item.description || ''),
+                        source: feed.name,
+                        sourceClass: feed.class,
+                        category: feed.id,
+                        image: extractImage(item, feed.id)
+                    }));
+                }
+            } catch (e) {
+                // Failover to secondary converter
+            }
+
+            // 2. High-Capacity Secondary Failover: feed2json.org (handles unmetered feeds)
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const res = await fetch(`https://feed2json.org/convert?url=${encodeURIComponent(feed.url)}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if (Array.isArray(data.items) && data.items.length > 0) {
+                    return data.items.map(item => {
+                        const combined = (item.summary || '') + ' ' + (item.content_html || '');
+                        const imgMatch = combined.match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+                        const img = item.image || (imgMatch ? imgMatch[1] : null) || FALLBACKS[feed.id] || FALLBACKS.world;
+                        return {
+                            title: cleanHtml(item.title),
+                            link: item.url,
+                            pubDate: parseFeedDate(item.date_published),
+                            snippet: cleanHtml(item.summary || item.content_html || ''),
+                            source: feed.name,
+                            sourceClass: feed.class,
+                            category: feed.id,
+                            image: img
+                        };
+                    });
+                }
+            } catch (e) {
+                // Silently skip if unavailable
+            }
+
+            return [];
+        }
+
         async function fetchLiveNews() {
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.style.transform = 'rotate(360deg)';
@@ -1384,29 +1458,13 @@
             const cutoff = now - (48 * 60 * 60 * 1000); // 48 hours
 
             try {
-                const requests = FEEDS.map(feed => 
-                    fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`)
-                        .then(r => r.json())
-                        .then(data => {
-                            if (data.status === 'ok' && data.items) {
-                                return data.items.map(item => ({
-                                    title: cleanHtml(item.title),
-                                    link: item.link,
-                                    pubDate: parseFeedDate(item.pubDate),
-                                    snippet: cleanHtml(item.description || ''),
-                                    source: feed.name,
-                                    sourceClass: feed.class,
-                                    category: feed.id,
-                                    image: extractImage(item, feed.id)
-                                }));
-                            }
-                            return [];
-                        })
-                        .catch(() => [])
-                );
-
-                const results = await Promise.all(requests);
-                results.forEach(items => fetchedItems.push(...items));
+                // Batch requests in small concurrent chunks (6 at a time) to prevent connection timeouts and avoid rate limits
+                const batchSize = 6;
+                for (let i = 0; i < FEEDS.length; i += batchSize) {
+                    const batch = FEEDS.slice(i, i + batchSize);
+                    const results = await Promise.all(batch.map(f => fetchSingleFeed(f)));
+                    results.forEach(items => fetchedItems.push(...items));
+                }
 
                 // Sort by newest first
                 allArticles = fetchedItems
