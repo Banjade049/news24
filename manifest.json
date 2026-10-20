@@ -1,6 +1,6 @@
 {
-  "name": "News24 Pro — 24 Ghanta ko Taaza Khabar",
-  "short_name": "News24",
+  "name": "NewsPulse Pro — Live News Engine",
+  "short_name": "NewsPulse",
   "description": "Bityeko 24 ghanta ko taaza trending khabar, Man City, Nepal, World ra Technology samachar.",
   "start_url": "./index.html",
   "display": "standalone",
